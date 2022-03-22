@@ -129,6 +129,14 @@ static CDVWKInAppBrowser* instance = nil;
     CDVInAppBrowserOptions* browserOptions = [CDVInAppBrowserOptions parseOptions:options];
     
     WKWebsiteDataStore* dataStore = [WKWebsiteDataStore defaultDataStore];
+
+    // Add sharedHTTPCookieStorage cookies to the WKHTTPCookieStore
+    WKHTTPCookieStore* cookieStore = dataStore.httpCookieStore;
+    NSHTTPCookieStorage* storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie* cookie in storage.cookies) {
+        [cookieStore setCookie:cookie completionHandler:nil];
+    }
+    
     if (browserOptions.cleardata) {
         
         NSDate* dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
